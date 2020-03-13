@@ -14,7 +14,6 @@
     "cheerio": "^1.0.0-rc.3",
     "fs": "0.0.1-security",
     "mt-files-downloader": "^0.2.5",
-    "readme-md-generator": "^1.0.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5"
   }
