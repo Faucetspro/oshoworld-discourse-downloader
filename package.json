@@ -1,0 +1,21 @@
+{
+  "name": "download-oshoworld-Audio-Discourse",
+  "version": "1.0.0",
+  "description": "download all oshoworld Audio Discourse",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "cheerio": "^1.0.0-rc.3",
+    "fs": "0.0.1-security",
+    "mt-files-downloader": "^0.2.5",
+    "readme-md-generator": "^1.0.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5"
+  }
+}
