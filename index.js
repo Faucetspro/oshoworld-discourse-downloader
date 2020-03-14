@@ -51,20 +51,22 @@ const scrapeFiles = async function(){
     return fileUrls;
 }
 
-const downloadFiles = async function(){
-    const fileUrls = await scrapeFiles();
-    if (!fs.existsSync(config.DOWNLOAD_PATH)){
-        fs.mkdirSync(config.DOWNLOAD_PATH);
-    }
-
+const downloadParts = async function(urlsPart){
     const downloader = new Downloader();
-    for(url of fileUrls){
-        const audioFolderName = path.basename(url).slice(5);
-        const downloadPath = config.DOWNLOAD_PATH + audioFolderName.slice(0, audioFolderName.length-7) + '/';
+    for(url of urlsPart){
+        const fileName = path.basename(url).slice(5);
+        const downloadPath = config.DOWNLOAD_PATH + fileName.slice(0, fileName.length-7) + '/';
         if (!fs.existsSync(downloadPath)){
             fs.mkdirSync(downloadPath);
         }
-        const fileName = path.basename(url).slice(5);
+        
+        try {
+            if (fs.existsSync(downloadPath + fileName)) {
+            continue;
+            }
+        } catch(err) {
+            console.error(err)
+        }
         const dl = downloader.download(url, downloadPath +fileName);
         // Set retry options
         dl.setRetryOptions({
@@ -82,9 +84,29 @@ const downloadFiles = async function(){
         });
         registerDlEvents(fileName, dl);
         dl.start();
+        await sleep(5000);
         dl.on('start', function() {
-            console.log('Download started with '+ ((dl.meta.threads) ? dl.meta.threads.length : 0) +' threads.')
+            console.log('Download started with '+ ((dl.meta.threads) ? dl.meta.threads.length : 0) +' threads.');
         });
+    }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+const downloadFiles = async function(){
+    const fileUrls = await scrapeFiles();
+    if (!fs.existsSync(config.DOWNLOAD_PATH)){
+        fs.mkdirSync(config.DOWNLOAD_PATH);
+    }
+
+    
+    for(let i=0;i<fileUrls.length;i+=8){
+        // console.log(i);
+        let partUrls = fileUrls.slice(i, i+8);
+        console.log(partUrls)
+        await downloadParts(partUrls);
     }
 }
 
